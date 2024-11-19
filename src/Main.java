@@ -22,8 +22,28 @@ public class Main {
             String lastName = "Kowalski";
             patientManager.DisplayPatientsBySurname(lastName);
         }
-        else{
-            System.out.printf("To be implemented... ");
+        else if ((role.toLowerCase()).equals("lekarz")) {
+            DoctorManager doctorManager = new DoctorManager();
+
+            doctorManager.AddDoctor();
+
+            Doctor exampleDoctor = new Doctor(
+                    "D001",
+                    "Anna",
+                    "Nowak",
+                    45,
+                    "Kardiolog",
+                    123456789,
+                    "anna.nowak@example.com",
+                    java.time.LocalDateTime.now()
+            );
+            doctorManager.DoctorList.add(exampleDoctor);
+
+            doctorManager.DisplayDoctorById("01");
+
+            doctorManager.DisplayDoctorsBySpecialization("Kardiolog");
+        } else {
+            System.out.printf("Nieznana rola. Dostępne role to: recepcjonista, lekarz.");
         }
     }
 }
