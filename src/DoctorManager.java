@@ -6,6 +6,7 @@ import java.util.Scanner;
 public class DoctorManager {
     public List<Doctor> doctorList = new ArrayList<>();
 
+
     public void AddDoctor() {
         Scanner scanner = new Scanner(System.in);
 
