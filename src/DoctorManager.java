@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Scanner;
 
 public class DoctorManager {
-    public List<Doctor> DoctorList = new ArrayList<>();
+    public List<Doctor> doctorList = new ArrayList<>();
 
     public void AddDoctor() {
         Scanner scanner = new Scanner(System.in);
@@ -22,10 +22,15 @@ public class DoctorManager {
 
         System.out.printf("Wiek: ");
         int age = scanner.nextInt();
-        scanner.nextLine();
+        scanner.nextLine();  // consume newline character
 
-        System.out.printf("Specjalizacja: ");
-        String specialization = scanner.nextLine();
+        System.out.printf("Specjalizacje (oddzielone przecinkami): ");
+        String specializationsInput = scanner.nextLine();
+        String[] specializationsArray = specializationsInput.split(",");
+        List<Specialization> specializations = new ArrayList<>();
+        for (String specializationStr : specializationsArray) {
+            specializations.add(Specialization.valueOf(specializationStr.trim().toUpperCase()));  // zamiana na enum
+        }
 
         System.out.printf("Numer telefonu: ");
         int phoneNumber = scanner.nextInt();
@@ -38,29 +43,29 @@ public class DoctorManager {
         String hireDateInput = scanner.nextLine();
         LocalDateTime hireDate = LocalDateTime.parse(hireDateInput + "T00:00:00");
 
-        Doctor doctor = new Doctor(id, firstName, lastName, age, specialization, phoneNumber, mailAddress, hireDate);
+        Doctor doctor = new Doctor(id, firstName, lastName, age, specializations, phoneNumber, mailAddress, hireDate);
 
-        DoctorList.add(doctor);
+        doctorList.add(doctor);
 
         System.out.println("Lekarz utworzony poprawnie.");
     }
 
     public void DisplayDoctorById(String id) {
         System.out.println("Wyświetl lekarza z ID: " + id);
-        for (Doctor doctor : DoctorList) {
+        for (Doctor doctor : doctorList) {
             if (doctor.id.equals(id)) {
-                System.out.println(doctor.firstName + ", " + doctor.lastName + ", Specjalizacja: " + doctor.specialization);
+                System.out.println(doctor.firstName + ", " + doctor.lastName + ", Specjalizacje: " + doctor.specializations);
                 return;
             }
         }
         System.out.println("Lekarz z ID " + id + " nie został znaleziony.");
     }
 
-    public void DisplayDoctorsBySpecialization(String specialization) {
+    public void DisplayDoctorsBySpecialization(Specialization specialization) {
         System.out.println("Wyświetl lekarzy z specjalizacją: " + specialization);
-        for (Doctor doctor : DoctorList) {
-            if (doctor.specialization.equalsIgnoreCase(specialization)) {
-                System.out.println(doctor.firstName + ", " + doctor.lastName + ", Specjalizacja: " + doctor.specialization);
+        for (Doctor doctor : doctorList) {
+            if (doctor.specializations.contains(specialization)) {
+                System.out.println(doctor.firstName + ", " + doctor.lastName + ", Specjalizacja: " + doctor.specializations);
             }
         }
     }
