@@ -48,6 +48,7 @@ public class MainMenu {
         System.out.println("1. Dodaj lekarza.");
         System.out.println("2. Wyświetl wszystkich lekarzy.");
         System.out.println("3. Edytuj specjalizacje lekarzowi.");
+        System.out.println("4. Znajdź lekarzy po specjalizacji.");
         System.out.printf("Wybierz opcję: ");
 
         int hrSelection = scanner.nextInt();
@@ -131,6 +132,17 @@ public class MainMenu {
             } else {
                 System.out.println("Niepoprawna opcja.");
             }
+        }
+        if (hrSelection == 6) {
+            System.out.println("Dostępne specjalizacje: ");
+            for (Specialization specialization : Specialization.values()) {
+                System.out.println(specialization);
+            }
+            System.out.print("Wybierz specjalizację, aby wyświetlić lekarzy: ");
+            String specializationInput = scanner.nextLine();
+            Specialization specialization = Specialization.valueOf(specializationInput.toUpperCase());
+
+            DoctorManager.DisplayDoctorsBySpecialization(specialization);
         }
 
         else {
