@@ -1,8 +1,178 @@
+import Enums.Roles;
+import Extensions.IntExtensions;
 import java.util.Scanner;
 
 public class MainMenu {
+    private boolean StopExecution = false;
 
-    public void DisplayMainMenu() {
+    private final Scanner Scanner = new Scanner(System.in);
+    private final PatientManager PatientManager = new PatientManager();
+    private final DoctorManager DoctorManager = new DoctorManager();
+    private final IntExtensions IntExtensions = new IntExtensions();
+
+    public void DisplayMainMenu(){
+        System.out.println("LOGOWANIE DO SYSTEMU");
+
+        while(!StopExecution)
+        {
+            Roles role = RoleSelector();
+
+            if(role.equals(Roles.Receptionist))
+            {
+                DisplayReceptionistMenu();
+            }
+            else if (role.equals(Roles.HR))
+            {
+                DisplayHrMenu();
+            }
+            else
+            {
+                System.out.println("Nie ma takiej roli...");
+            }
+        }
+    }
+
+    private Roles RoleSelector(){
+        System.out.println("Wybierz swoją rolę:");
+        System.out.println("1. Recepcjonista");
+        System.out.println("2. HR");
+        System.out.printf("Wprowadź numer roli: ");
+
+        int roleSelection = this.Scanner.nextInt();
+        this.Scanner.nextLine();
+
+        if (roleSelection == 1) {
+            return Roles.Receptionist;
+        } else if (roleSelection == 2) {
+            return Roles.HR;
+        } else {
+            return Roles.NoRole;
+        }
+    }
+
+    private void DisplayReceptionistMenu(){
+        int maxUserInputVal = 7;
+
+        while(true)
+        {
+            System.out.println("MENU GŁÓWNE");
+            System.out.println("1. Dodaj pacjenta.");
+            System.out.println("2. Wyszukaj pacjenta po peselu.");
+            System.out.println("3. Wyszukaj pacjentów po nazwisku.");
+            System.out.println("4. Wyszukaj lekarza po ID.");
+            System.out.println("5. Wyszukaj lekarzy po specjalizacji.");
+            System.out.println("6. Zmień rolę.");
+            System.out.println("7. Wyjdź.");
+            System.out.printf("Wybierz numer zakładki: ");
+
+            String userInput = this.Scanner.nextLine();
+            int userChoice = ValidateUserInput(userInput, maxUserInputVal);
+
+            HandleReceptionistInput(userChoice);
+
+            if(userChoice == 6)
+            {
+                DisplayMainMenu();
+                break;
+            }
+            else if(userChoice == 7)
+            {
+                StopExecution = true;
+                break;
+            }
+        }
+    }
+
+    private void DisplayHrMenu(){
+        int maxUserInputVal = 4;
+
+        while(true)
+        {
+            System.out.println("MENU GŁÓWNE");
+            System.out.println("1. Dodaj lekarza.");
+            System.out.println("2. Dodaj nową specjalizację lekarzowi.");
+            System.out.println("3. Zmień rolę.");
+            System.out.println("4. Wyjdź.");
+            System.out.printf("Wybierz numer zakładki: ");
+
+            String userInput = this.Scanner.nextLine();
+            int userChoice = ValidateUserInput(userInput, maxUserInputVal);
+
+            HandleHrInput(userChoice);
+
+            if(userChoice == 3)
+            {
+                DisplayMainMenu();
+                break;
+            }
+            else if(userChoice == 4)
+            {
+                StopExecution = true;
+                break;
+            }
+        }
+    }
+
+    private void HandleReceptionistInput(int userInput){
+        switch (userInput){
+            case 1:
+                PatientManager.AddPatient();
+                break;
+            case 2:
+                PatientManager.DisplayPatientById();
+                break;
+            case 3:
+                PatientManager.DisplayPatientsBySurname();
+                break;
+            case 4:
+                DoctorManager.DisplayDoctorById();
+                break;
+            case 5:
+                DoctorManager.DisplayDoctorsBySpecialization();
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void HandleHrInput(int userInput){
+        switch (userInput){
+            case 1:
+                DoctorManager.AddDoctor();
+                break;
+            case 2:
+                DoctorManager.UpdateDoctorSpecialization();
+                break;
+            default:
+                break;
+        }
+    }
+
+    private int ValidateUserInput(String userInput, int maxUserInputVal){
+        while(true)
+        {
+            if (IntExtensions.IsInteger(userInput)) {
+                int cast = Integer.parseInt(userInput);
+
+                if(cast <= maxUserInputVal && cast > 0)
+                {
+                    break;
+                }
+                else{
+                    System.out.printf("Wybrana zakładka nie istnieje, wybierz jeszcze raz: ");
+                    userInput = this.Scanner.nextLine();
+                }
+            }
+            else{
+                System.out.printf("Wprowadzony znak nie jest liczbą, wybierz jeszcze raz: ");
+                userInput = this.Scanner.nextLine();
+            }
+        }
+
+        return Integer.parseInt(userInput);
+    }
+
+    /*public void DisplayMainMenu() {
         Scanner scanner = new Scanner(System.in);
 
         System.out.println("MENU GŁÓWNE");
@@ -38,9 +208,9 @@ public class MainMenu {
         }
 
         System.out.println("X Wróć do menu głównego.");
-    }
+    }*/
 
-    public void DisplayHRMenu() {
+    /*public void DisplayHRMenu() {
         Scanner scanner = new Scanner(System.in);
         DoctorManager doctorManager = new DoctorManager();
 
@@ -142,11 +312,11 @@ public class MainMenu {
             String specializationInput = scanner.nextLine();
             Specialization specialization = Specialization.valueOf(specializationInput.toUpperCase());
 
-            DoctorManager.DisplayDoctorsBySpecialization(specialization);
+            //DoctorManager.DisplayDoctorsBySpecialization(specialization);
         }
 
         else {
             System.out.println("Nieprawidłowy wybór.");
         }
-    }
+    }*/
 }
