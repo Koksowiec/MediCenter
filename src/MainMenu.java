@@ -1,13 +1,16 @@
+import Doctor.DoctorManager;
 import Enums.Roles;
 import Extensions.IntExtensions;
+import Patient.PatientManager;
+
 import java.util.Scanner;
 
 public class MainMenu {
     private boolean StopExecution = false;
 
     private final Scanner Scanner = new Scanner(System.in);
-    private final PatientManager PatientManager = new PatientManager();
-    private final DoctorManager DoctorManager = new DoctorManager();
+    private final Patient.PatientManager PatientManager = new PatientManager();
+    private final Doctor.DoctorManager DoctorManager = new DoctorManager();
     private final IntExtensions IntExtensions = new IntExtensions();
 
     public void DisplayMainMenu(){
@@ -58,7 +61,7 @@ public class MainMenu {
     }
 
     private void DisplayReceptionistMenu(){
-        int maxUserInputVal = 8;
+        int maxUserInputVal = 9;
 
         while(true)
         {
@@ -69,8 +72,9 @@ public class MainMenu {
             System.out.println("4. Wyszukaj lekarza po ID.");
             System.out.println("5. Wyszukaj lekarzy po specjalizacji.");
             System.out.println("6. Wyświetl grafik lekarza.");
-            System.out.println("7. Zmień rolę.");
-            System.out.println("8. Wyjdź.");
+            System.out.println("7. Umów pacjenta na wizytę.");
+            System.out.println("8. Zmień rolę.");
+            System.out.println("9. Wyjdź.");
             System.out.printf("Wybierz numer zakładki: ");
 
             String userInput = this.Scanner.nextLine();
@@ -78,12 +82,12 @@ public class MainMenu {
 
             HandleReceptionistInput(userChoice);
 
-            if(userChoice == 7)
+            if(userChoice == 8)
             {
                 DisplayMainMenu();
                 break;
             }
-            else if(userChoice == 8)
+            else if(userChoice == 9)
             {
                 StopExecution = true;
                 break;
@@ -169,6 +173,9 @@ public class MainMenu {
                 break;
             case 6:
                 DoctorManager.DisplayDoctorSchedulesByDoctorId();
+                break;
+            case 7:
+                DoctorManager.ScheduleAppointmentByDoctorId();
                 break;
             default:
                 break;
@@ -262,7 +269,7 @@ public class MainMenu {
 
     /*public void DisplayHRMenu() {
         Scanner scanner = new Scanner(System.in);
-        DoctorManager doctorManager = new DoctorManager();
+        Doctor.DoctorManager doctorManager = new Doctor.DoctorManager();
 
         System.out.println("ZALOGOWANO JAKO HR");
         System.out.println("1. Dodaj lekarza.");
@@ -278,7 +285,7 @@ public class MainMenu {
             doctorManager.AddDoctor();
         } else if (hrSelection == 2) {
             System.out.println("LISTA LEKARZY:");
-            for (Doctor doctor : doctorManager.doctorList) {
+            for (Doctor.Doctor doctor : doctorManager.doctorList) {
                 System.out.print("Specjalizacje: ");
                 for (Specialization specialization : doctor.specializations) {
                     System.out.print(specialization + " ");
@@ -290,7 +297,7 @@ public class MainMenu {
         else if (hrSelection == 3) {
             System.out.println("ID lekarza, któremu chcesz dodać/usunąć specjalizację:");
 
-            for (Doctor doctor : doctorManager.doctorList) {
+            for (Doctor.Doctor doctor : doctorManager.doctorList) {
                 System.out.println("ID: " + doctor.id + ", Imię: " + doctor.firstName + ", Specjalizacje: ");
                 for (Specialization specialization : doctor.specializations) {
                     System.out.print(specialization + " ");
@@ -301,8 +308,8 @@ public class MainMenu {
             System.out.print("Podaj ID lekarza: ");
             String doctorId = scanner.nextLine();
 
-            Doctor selectedDoctor = null;
-            for (Doctor doctor : doctorManager.doctorList) {
+            Doctor.Doctor selectedDoctor = null;
+            for (Doctor.Doctor doctor : doctorManager.doctorList) {
                 if (doctor.id.equals(doctorId)) {
                     selectedDoctor = doctor;
                     break;
@@ -362,7 +369,7 @@ public class MainMenu {
             String specializationInput = scanner.nextLine();
             Specialization specialization = Specialization.valueOf(specializationInput.toUpperCase());
 
-            //DoctorManager.DisplayDoctorsBySpecialization(specialization);
+            //Doctor.DoctorManager.DisplayDoctorsBySpecialization(specialization);
         }
 
         else {

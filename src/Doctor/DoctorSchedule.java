@@ -1,9 +1,12 @@
+package Doctor;
+
 import java.time.DayOfWeek;
+import java.time.LocalTime;
 
 public class DoctorSchedule {
     public DayOfWeek dayOfWeek;
-    public String from;
-    public String to;
+    public LocalTime from;
+    public LocalTime to;
     public boolean isWorkingDay = true;
 
     public DoctorSchedule() {
@@ -14,7 +17,7 @@ public class DoctorSchedule {
         this.isWorkingDay = isWorkingDay;
     }
 
-    public DoctorSchedule(DayOfWeek dayOfWeek, String from, String to) {
+    public DoctorSchedule(DayOfWeek dayOfWeek, LocalTime from, LocalTime to) {
         this.dayOfWeek = dayOfWeek;
         this.from = from;
         this.to = to;

@@ -1,3 +1,5 @@
+package Patient;
+
 import Extensions.LocalDateTimeExtensions;
 
 import java.util.ArrayList;
@@ -10,7 +12,7 @@ public class PatientManager {
     private final Scanner scanner = new Scanner(System.in);
     private final Extensions.LocalDateTimeExtensions LocalDateTimeExtensions = new LocalDateTimeExtensions();
 
-    PatientManager(){
+    public PatientManager(){
         Patient patient = new Patient(
                 "Jan",
                 "Kowalski",

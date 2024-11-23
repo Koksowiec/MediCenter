@@ -1,8 +1,11 @@
+package Doctor;
+
 import Enums.Specialization;
+import Patient.Patient;
 
 import java.util.List;
 
-public class Doctor extends Patient{
+public class Doctor extends Patient {
     public String doctorId;
     public List<Specialization> specializations;
     public List<DoctorSchedule> schedules;
