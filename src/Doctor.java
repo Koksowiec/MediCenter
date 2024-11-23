@@ -1,11 +1,11 @@
 import Enums.Specialization;
 
 import java.util.List;
-import java.time.LocalDateTime;
 
 public class Doctor extends Patient{
     public String doctorId;
     public List<Specialization> specializations;
+    public List<DoctorSchedule> schedules;
 
     public Doctor() {
     }

@@ -25,6 +25,10 @@ public class MainMenu {
             {
                 DisplayHrMenu();
             }
+            else if (role.equals(Roles.Manager))
+            {
+                DisplayManagerMenu();
+            }
             else
             {
                 System.out.println("Nie ma takiej roli...");
@@ -36,6 +40,7 @@ public class MainMenu {
         System.out.println("Wybierz swoją rolę:");
         System.out.println("1. Recepcjonista");
         System.out.println("2. HR");
+        System.out.println("3. Kierownik placówki");
         System.out.printf("Wprowadź numer roli: ");
 
         int roleSelection = this.Scanner.nextInt();
@@ -45,13 +50,15 @@ public class MainMenu {
             return Roles.Receptionist;
         } else if (roleSelection == 2) {
             return Roles.HR;
+        } else if (roleSelection == 3) {
+            return Roles.Manager;
         } else {
             return Roles.NoRole;
         }
     }
 
     private void DisplayReceptionistMenu(){
-        int maxUserInputVal = 7;
+        int maxUserInputVal = 8;
 
         while(true)
         {
@@ -61,8 +68,9 @@ public class MainMenu {
             System.out.println("3. Wyszukaj pacjentów po nazwisku.");
             System.out.println("4. Wyszukaj lekarza po ID.");
             System.out.println("5. Wyszukaj lekarzy po specjalizacji.");
-            System.out.println("6. Zmień rolę.");
-            System.out.println("7. Wyjdź.");
+            System.out.println("6. Wyświetl grafik lekarza.");
+            System.out.println("7. Zmień rolę.");
+            System.out.println("8. Wyjdź.");
             System.out.printf("Wybierz numer zakładki: ");
 
             String userInput = this.Scanner.nextLine();
@@ -70,12 +78,12 @@ public class MainMenu {
 
             HandleReceptionistInput(userChoice);
 
-            if(userChoice == 6)
+            if(userChoice == 7)
             {
                 DisplayMainMenu();
                 break;
             }
-            else if(userChoice == 7)
+            else if(userChoice == 8)
             {
                 StopExecution = true;
                 break;
@@ -113,6 +121,35 @@ public class MainMenu {
         }
     }
 
+    private void DisplayManagerMenu(){
+        int maxUserInputVal = 3;
+
+        while(true)
+        {
+            System.out.println("MENU GŁÓWNE");
+            System.out.println("1. Dodaj grafik dla lekarza.");
+            System.out.println("2. Zmień rolę.");
+            System.out.println("3. Wyjdź.");
+            System.out.printf("Wybierz numer zakładki: ");
+
+            String userInput = this.Scanner.nextLine();
+            int userChoice = ValidateUserInput(userInput, maxUserInputVal);
+
+            HandleManagerInput(userChoice);
+
+            if(userChoice == 2)
+            {
+                DisplayMainMenu();
+                break;
+            }
+            else if(userChoice == 3)
+            {
+                StopExecution = true;
+                break;
+            }
+        }
+    }
+
     private void HandleReceptionistInput(int userInput){
         switch (userInput){
             case 1:
@@ -130,6 +167,9 @@ public class MainMenu {
             case 5:
                 DoctorManager.DisplayDoctorsBySpecialization();
                 break;
+            case 6:
+                DoctorManager.DisplayDoctorSchedulesByDoctorId();
+                break;
             default:
                 break;
         }
@@ -142,6 +182,16 @@ public class MainMenu {
                 break;
             case 2:
                 DoctorManager.UpdateDoctorSpecialization();
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void HandleManagerInput(int userInput){
+        switch (userInput){
+            case 1:
+                DoctorManager.AddScheduleByDoctorId();
                 break;
             default:
                 break;

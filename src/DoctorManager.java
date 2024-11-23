@@ -1,6 +1,7 @@
 import Enums.Specialization;
 import Extensions.LocalDateTimeExtensions;
 
+import java.time.DayOfWeek;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -69,6 +70,44 @@ public class DoctorManager {
         System.out.println("Lekarz utworzony poprawnie.");
     }
 
+    public void AddScheduleByDoctorId(){
+        System.out.println("DODAJ GRAFIK LEKARZA");
+
+        System.out.printf("Podaj ID lekarza: ");
+        String id = scanner.nextLine();
+
+        for (Doctor doctor : doctorList) {
+            if (doctor.doctorId.equals(id)) {
+                List<DoctorSchedule> doctorSchedules = new ArrayList<>();
+
+                for(int i = 1; i <= 7; i++)
+                {
+                    DayOfWeek dayOfWeek = DayOfWeek.of(i);
+
+                    System.out.printf(String.format("Podaj godziny pracy lekarza (od-do lub WOLNE) w dzień %s: ", dayOfWeek));
+                    String userInput = scanner.nextLine();
+
+                    DoctorSchedule doctorSchedule;
+                    if(!userInput.equals("WOLNE"))
+                    {
+                        String[] hours = userInput.split("-");
+                        doctorSchedule = new DoctorSchedule(dayOfWeek, hours[0], hours[1]);
+                    }
+                    else
+                    {
+                        doctorSchedule = new DoctorSchedule(dayOfWeek, false);
+                    }
+
+                    doctorSchedules.add(doctorSchedule);
+                }
+
+                doctor.schedules = doctorSchedules;
+                return;
+            }
+        }
+        System.out.println("Lekarz z ID " + id + " nie został znaleziony.");
+    }
+
     public void UpdateDoctorSpecialization(){
         System.out.println("DODAJ SPECJALIZACJE LEKARZA");
 
@@ -87,6 +126,7 @@ public class DoctorManager {
                 return;
             }
         }
+        System.out.println("Lekarz z ID " + id + " nie został znaleziony.");
     }
 
     public void DisplayDoctorById() {
@@ -113,5 +153,29 @@ public class DoctorManager {
                 System.out.println(doctor.firstName + ", " + doctor.lastName + ", Specjalizacje: " + doctor.specializations);
             }
         }
+    }
+
+    public void DisplayDoctorSchedulesByDoctorId() {
+        System.out.printf("Wprowadź ID: ");
+        String id = scanner.nextLine();
+
+        for (Doctor doctor : doctorList) {
+            if (doctor.doctorId.equals(id)) {
+                if(doctor.schedules != null) {
+                    for (DoctorSchedule doctorSchedule : doctor.schedules) {
+                        if (doctorSchedule.isWorkingDay) {
+                            System.out.println(String.format("%s %s-%s", doctorSchedule.dayOfWeek, doctorSchedule.from, doctorSchedule.to));
+                        } else {
+                            System.out.println(String.format("%s WOLNE", doctorSchedule.dayOfWeek));
+                        }
+                    }
+                    return;
+                } else {
+                    System.out.println("Lekarz z ID " + id + " nie posiada grafiku.");
+                    return;
+                }
+            }
+        }
+        System.out.println("Lekarz z ID " + id + " nie został znaleziony.");
     }
 }
