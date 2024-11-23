@@ -19,4 +19,6 @@ public class Doctor extends Patient {
         this.doctorId = doctorId;
         this.specializations = specializations;
     }
+
+    // TODO: DODAJ GETTERY I SETTERY
 }

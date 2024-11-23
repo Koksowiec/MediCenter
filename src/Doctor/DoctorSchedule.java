@@ -22,4 +22,6 @@ public class DoctorSchedule {
         this.from = from;
         this.to = to;
     }
+
+    // TODO: DODAJ GETTERY I SETTERY
 }

@@ -18,4 +18,6 @@ public class DoctorAppointment {
         this.apointmentTime = apointmentTime;
         this.dayOfWeek = dayOfWeek;
     }
+
+    // TODO: DODAJ GETTERY I SETTERY
 }

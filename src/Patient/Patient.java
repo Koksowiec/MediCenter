@@ -23,10 +23,11 @@ public class Patient {
         this.firstName = firstName;
         this.lastName = lastName;
         this.id = id;
-        this.dateOfBirth = dateOfBirth;
+        this.dateOfBirth = dateOfBirth; // TODO: TO MOŻE BYĆ OBLICZONE Z PESELU
         this.age = Integer.toString(Period.between(LocalDate.parse(dateOfBirth, DateTimeFormatter.ofPattern("yyyy-MM-dd")), LocalDate.now()).getYears());
         this.phoneNumber = phoneNumber;
         this.mailAddress = mailAddress;
     }
 
+    // TODO: DODAJ GETTERY I SETTERY
 }
