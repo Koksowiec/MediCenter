@@ -11,6 +11,7 @@ public class DoctorManagerService {
     private final Scanner scanner = new Scanner(System.in);
     private final Extensions.LocalDateTimeExtensions LocalDateTimeExtensions = new LocalDateTimeExtensions();
 
+    /*
     public String ValidateDayOfWeek(String dayOfWeek){
         while(true)
         {
@@ -89,4 +90,5 @@ public class DoctorManagerService {
             }
         }
     }
+    */
 }

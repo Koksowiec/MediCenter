@@ -1,22 +1,21 @@
 package Doctor;
 
-import java.time.DayOfWeek;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Date;
 
 public class DoctorAppointment {
     public String doctorId;
     public String patientId;
-    public LocalTime apointmentTime;
-    public DayOfWeek dayOfWeek;
+    public LocalDateTime apoointmentDateTime;
 
     public DoctorAppointment(){
     }
 
-    public DoctorAppointment(String doctorId, String patientId, LocalTime apointmentTime, DayOfWeek dayOfWeek) {
+    public DoctorAppointment(String doctorId, String patientId, LocalDateTime apoointmentDateTime) {
         this.doctorId = doctorId;
         this.patientId = patientId;
-        this.apointmentTime = apointmentTime;
-        this.dayOfWeek = dayOfWeek;
+        this.apoointmentDateTime = apoointmentDateTime;
     }
 
     // TODO: DODAJ GETTERY I SETTERY
