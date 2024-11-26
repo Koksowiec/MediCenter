@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Scanner;
 
 public class PatientManager {
-    public List<Patient> PatientList = new ArrayList<>();
+    public static List<Patient> PatientList = new ArrayList<>();
 
     private final Scanner scanner = new Scanner(System.in);
     private final Extensions.LocalDateTimeExtensions LocalDateTimeExtensions = new LocalDateTimeExtensions();
@@ -39,7 +39,7 @@ public class PatientManager {
         System.out.printf("Data urodzin (yyyy-MM-dd): ");
         String dateOfBirth = scanner.nextLine();
 
-        while(!LocalDateTimeExtensions.isLocalDateTime(dateOfBirth)){
+        while(!LocalDateTimeExtensions.isLocalDate(dateOfBirth)){
             System.out.printf("Podano niepoprawną datę urodzin, podaj jeszcze raz (yyyy-MM-dd): ");
             dateOfBirth = scanner.nextLine();
         }

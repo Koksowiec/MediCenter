@@ -1,21 +1,19 @@
 package Doctor;
 
 import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.util.Date;
 
 public class DoctorAppointment {
     public String doctorId;
     public String patientId;
-    public LocalDateTime apoointmentDateTime;
+    public LocalDateTime appointmentDateTime;
 
     public DoctorAppointment(){
     }
 
-    public DoctorAppointment(String doctorId, String patientId, LocalDateTime apoointmentDateTime) {
+    public DoctorAppointment(String doctorId, String patientId, LocalDateTime appointmentDateTime) {
         this.doctorId = doctorId;
         this.patientId = patientId;
-        this.apoointmentDateTime = apoointmentDateTime;
+        this.appointmentDateTime = appointmentDateTime;
     }
 
     // TODO: DODAJ GETTERY I SETTERY

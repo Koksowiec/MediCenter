@@ -3,12 +3,15 @@ package Doctor;
 import Enums.Specialization;
 import Patient.Patient;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Doctor extends Patient {
     public String doctorId;
-    public List<Specialization> specializations;
-    public List<DoctorSchedule> schedules;
+    public List<Specialization> specializations = new ArrayList<>();
+
+    public List<DoctorSchedule> schedules = new ArrayList<>();
+    public List<DoctorAppointment> appointments = new ArrayList<>();
 
     public Doctor() {
     }

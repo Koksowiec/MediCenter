@@ -2,18 +2,17 @@ package Doctor;
 
 import Enums.Specialization;
 import Exceptions.DoctorAppointmentAlreadyExists;
+import Exceptions.DoctorDoesntWorkOnThisDate;
 import Extensions.LocalDateTimeExtensions;
 
-import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class DoctorManager {
-    public List<Doctor> doctorList = new ArrayList<>();
-    public List<DoctorAppointment> doctorAppointmentList = new ArrayList<>();
+    public static List<Doctor> DoctorList = new ArrayList<>();
 
     private final Scanner scanner = new Scanner(System.in);
     private final LocalDateTimeExtensions LocalDateTimeExtensions = new LocalDateTimeExtensions();
@@ -31,16 +30,16 @@ public class DoctorManager {
                 "1",
                 List.of(Specialization.CHIRURG));
 
-        doctor.schedules = Arrays.asList(
-                new DoctorSchedule(LocalDate.now(), LocalTime.parse("09:00"), LocalTime.parse("17:00")),
-                new DoctorSchedule(LocalDate.now().plusDays(1), LocalTime.parse("09:00"), LocalTime.parse("17:00")),
-                new DoctorSchedule(LocalDate.now().plusDays(2), LocalTime.parse("09:00"), LocalTime.parse("17:00")),
-                new DoctorSchedule(LocalDate.now().plusDays(3), LocalTime.parse("09:00"), LocalTime.parse("17:00")),
-                new DoctorSchedule(LocalDate.now().plusDays(5), LocalTime.parse("09:00"), LocalTime.parse("17:00"))
-        );
+        doctor.schedules.add(new DoctorSchedule(LocalDate.now(), LocalTime.parse("09:00"), LocalTime.parse("17:00")));
+        doctor.schedules.add(new DoctorSchedule(LocalDate.now().plusDays(1), LocalTime.parse("09:00"), LocalTime.parse("17:00")));
+        doctor.schedules.add(new DoctorSchedule(LocalDate.now().plusDays(2), LocalTime.parse("09:00"), LocalTime.parse("17:00")));
+        doctor.schedules.add(new DoctorSchedule(LocalDate.now().plusDays(3), LocalTime.parse("09:00"), LocalTime.parse("17:00")));
+        doctor.schedules.add(new DoctorSchedule(LocalDate.now().plusDays(5), LocalTime.parse("09:00"), LocalTime.parse("17:00")));
 
+        doctor.appointments.add(new DoctorAppointment(doctor.doctorId, "1", LocalDateTime.of(LocalDate.now(), LocalTime.parse("09:45"))));
+        doctor.appointments.add(new DoctorAppointment(doctor.doctorId, "1", LocalDateTime.of(LocalDate.now(), LocalTime.parse("13:00"))));
 
-        doctorList.add(doctor);
+        DoctorList.add(doctor);
     }
 
     public void AddDoctor() {
@@ -58,7 +57,7 @@ public class DoctorManager {
         System.out.printf("Data urodzin (yyyy-MM-dd): ");
         String dateOfBirth = scanner.nextLine();
 
-        while(!LocalDateTimeExtensions.isLocalDateTime(dateOfBirth)){
+        while(!LocalDateTimeExtensions.isLocalDate(dateOfBirth)){
             System.out.printf("Podano niepoprawną datę urodzin, podaj jeszcze raz (yyyy-MM-dd): ");
             dateOfBirth = scanner.nextLine();
         }
@@ -78,11 +77,11 @@ public class DoctorManager {
             specializations.add(Specialization.valueOf(specializationStr.trim().toUpperCase()));  // zamiana na enum
         }
 
-        String doctorId = Integer.toString(doctorList.size() + 1);
+        String doctorId = Integer.toString(DoctorList.size() + 1);
 
         Doctor doctor = new Doctor(firstName, lastName, id, dateOfBirth, phoneNumber, mailAddress, doctorId, specializations);
 
-        doctorList.add(doctor);
+        DoctorList.add(doctor);
 
         System.out.println(String.format("Lekarz utworzony poprawnie. Id: %s", doctorId));
     }
@@ -93,7 +92,7 @@ public class DoctorManager {
         System.out.printf("Podaj ID lekarza: ");
         String id = scanner.nextLine();
 
-        for (Doctor doctor : doctorList) {
+        for (Doctor doctor : DoctorList) {
             if (doctor.doctorId.equals(id)) {
                 List<DoctorSchedule> doctorSchedules = new ArrayList<>();
 
@@ -107,7 +106,7 @@ public class DoctorManager {
 
                 while(true)
                 {
-                    if(!LocalDateTimeExtensions.isLocalDateTime(date)) {
+                    if(!LocalDateTimeExtensions.isLocalDate(date)) {
                         System.out.print("Wprowadzono zły format daty, podaj jeszcze raz: ");
                         date = scanner.nextLine();
 
@@ -137,7 +136,8 @@ public class DoctorManager {
                     break;
                 }
 
-                doctorSchedules.add(new DoctorSchedule(LocalDate.parse(date), LocalTime.parse(hours[0]), LocalTime.parse(hours[1])));
+                var newDoctorSchedule = new DoctorSchedule(LocalDate.parse(date), LocalTime.parse(hours[0]), LocalTime.parse(hours[1]));
+                doctorSchedules.add(newDoctorSchedule);
 
                 doctor.schedules = doctorSchedules;
 
@@ -160,7 +160,7 @@ public class DoctorManager {
         String userInputSpecialization = scanner.nextLine();
         Specialization specialization = Specialization.valueOf(userInputSpecialization.trim().toUpperCase());
 
-        for (Doctor doctor : doctorList) {
+        for (Doctor doctor : DoctorList) {
             if (doctor.id.equals(id)) {
                 doctor.specializations.add(specialization);
 
@@ -175,7 +175,7 @@ public class DoctorManager {
         System.out.printf("Wprowadź ID: ");
         String id = scanner.nextLine();
 
-        for (Doctor doctor : doctorList) {
+        for (Doctor doctor : DoctorList) {
             if (doctor.doctorId.equals(id)) {
                 System.out.println(doctor.firstName + ", " + doctor.lastName + ", Specjalizacje: " + doctor.specializations);
                 return;
@@ -190,7 +190,7 @@ public class DoctorManager {
 
         Specialization specialization = Specialization.valueOf(userInput.trim().toUpperCase());
 
-        for (Doctor doctor : doctorList) {
+        for (Doctor doctor : DoctorList) {
             if (doctor.specializations.contains(specialization)) {
                 System.out.println(doctor.firstName + ", " + doctor.lastName + ", Specjalizacje: " + doctor.specializations);
             }
@@ -201,7 +201,7 @@ public class DoctorManager {
         System.out.printf("Wprowadź ID: ");
         String id = scanner.nextLine();
 
-        for (Doctor doctor : doctorList) {
+        for (Doctor doctor : DoctorList) {
             if (doctor.doctorId.equals(id)) {
                 if(doctor.schedules != null) {
                     // START: This can be moved to separate method
@@ -235,69 +235,36 @@ public class DoctorManager {
 
     public void ScheduleAppointmentByDoctorId(){
         System.out.printf("Wprowadź PESEL pacjenta: ");
-        String id = scanner.nextLine();
+        String patientId = scanner.nextLine();
+        if(!DoctorManagerService.ValidatePatientId(patientId))
+        {
+            return;
+        }
 
         System.out.printf("Wprowadź ID lekarza: ");
         String doctorId = scanner.nextLine();
-
-        System.out.printf("Wprowadź termin wizity (yyyy-MM-dd HH:mm): ");
-        String selectedDate = scanner.nextLine();
-
-        try
+        if(!DoctorManagerService.ValidateDoctorId(doctorId))
         {
-            for(DoctorAppointment doctorAppointment : doctorAppointmentList) {
-                if (doctorAppointment.doctorId.equals(doctorId)) {
-                    if(doctorAppointment.apoointmentDateTime.equals(selectedDate)){
-                        throw new DoctorAppointmentAlreadyExists();
-                    }
-                }
-            }
-
-            doctorAppointmentList.add(new DoctorAppointment(doctorId, id, LocalDateTime.parse(selectedDate)));
-        }
-        catch(DoctorAppointmentAlreadyExists e)
-        {
-            System.out.printf(e.getMessage());
+            return;
         }
 
-    }
-    /*
-    Jak można wyrzucać exception dla tego kodu, refactor idea:
-    - dodać własny Exception DoctorAppointmentException
-    - Zmienić kod aby wyświetlał wszystkie godziny co 15 min ale obok tych z wizytą wypisywać 15:45 - wizyta
-    - kiedy użytkownik wybierze dzień i godzinę gdzie jest juz wizyta dodać try catch i wyrzucić tam wyjątek
-    - kiedy użytkownik wybierze dzień i godzinę z poza grafiku dodać try catch i wyrzucić tam wyjątek
+        System.out.printf("Wprowadź termin wizity (yyyy-MM-dd): ");
+        String date = scanner.nextLine();
+        DoctorManagerService.ValidateVisitDate(date);
 
-    public void ScheduleAppointmentByDoctorId() {
-        System.out.printf("Wprowadź PESEL pacjenta: ");
-        String id = scanner.nextLine();
+        Doctor doctor = DoctorManagerService.GetDoctorById(doctorId);
 
-        System.out.printf("Wprowadź ID lekarza: ");
-        String doctorId = scanner.nextLine();
+        if(DoctorManagerService.TryDisplaySchedule(date, doctor)){
+            System.out.printf("Wprowadź godzinę wizity (HH:mm): ");
+            String time = scanner.nextLine();
+            DoctorManagerService.ValidateTime(time);
 
-        boolean canSchedule = DoctorManagerService.CanScheduleAppointment(doctorId, doctorList, doctorAppointmentList);
-
-        if(canSchedule)
-        {
-            System.out.printf("Wprowadź dzień i godzine wizyty (dzien,godzina[09:00]): ");
-            String date = scanner.nextLine();
-            String[] dateTime = date.split(",");
-
-            if(dateTime.length == 2) {
-                String dayOfWeek = DoctorManagerService.ValidateDayOfWeek(dateTime[0]);
-                String hour = DoctorManagerService.ValidateHour(dateTime[1]);
-
-                if (!DoctorManagerService.DoesAppointmentExist(LocalTime.parse(hour), DayOfWeek.valueOf(dayOfWeek), doctorId, doctorAppointmentList)) {
-                    DoctorAppointment doctorAppointment = new DoctorAppointment(doctorId, id, LocalTime.parse(hour), DayOfWeek.valueOf(dayOfWeek));
-                    doctorAppointmentList.add(doctorAppointment);
-
-                    System.out.println(String.format("Wizyta umówiona poprawnie na dzień %s na godzinę %s", dayOfWeek, hour));
-                    return;
-                }
+            if(!DoctorManagerService.TrySetAppointment(date, time, doctor, patientId))
+            {
+                System.out.println("Wizyta nie została umówiona...");
             }
         }
 
-        System.out.println("Nie udało się umówić wizyty...");
+        System.out.println("W tym dniu nie znaleziono grafiku dla tego lekarza...");
     }
-    */
 }
