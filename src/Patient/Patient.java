@@ -5,13 +5,13 @@ import java.time.Period;
 import java.time.format.DateTimeFormatter;
 
 public class Patient {
-    public String firstName;
-    public String lastName;
-    public String id;
-    public String dateOfBirth;
-    public String age;
-    public String phoneNumber;
-    public String mailAddress;
+    private String firstName;
+    private String lastName;
+    private String id;
+    private String dateOfBirth;
+    private String age;
+    private String phoneNumber;
+    private String mailAddress;
 
     //konstruktor domyślny
     public Patient() {
@@ -29,5 +29,59 @@ public class Patient {
         this.mailAddress = mailAddress;
     }
 
-    // TODO: DODAJ GETTERY I SETTERY
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getDateOfBirth() {
+        return dateOfBirth;
+    }
+
+    public void setDateOfBirth(String dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
+    }
+
+    public String getAge() {
+        return age;
+    }
+
+    public void setAge(String age) {
+        this.age = age;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public String getMailAddress() {
+        return mailAddress;
+    }
+
+    public void setMailAddress(String mailAddress) {
+        this.mailAddress = mailAddress;
+    }
 }

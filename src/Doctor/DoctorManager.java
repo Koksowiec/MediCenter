@@ -102,6 +102,16 @@ public class DoctorManager {
                     break;
                 }
 
+                // Sprawdź czy grafik na dany dzień już istnieje
+                for(DoctorSchedule doctorSchedule : doctor.getSchedules())
+                {
+                    if(doctorSchedule.getDate().equals(LocalDate.parse(date)))
+                    {
+                        System.out.println("Lekarz ma już grafik na ten dzień");
+                        return;
+                    }
+                }
+
                 // Validacja godzin, muszą być 2 i musza być w poprawnym formacie
                 System.out.printf("Podaj godziny(hh:mm-hh:mm): ");
                 String time = scanner.nextLine();
@@ -160,9 +170,7 @@ public class DoctorManager {
                     System.out.println("Ten lekarz już ma taką specjalizację...");
                     return;
                 }
-
-
-                System.out.println(doctor.firstName + ", " + doctor.lastName + ", Specjalizacje: " + doctor.getSpecializations());
+                System.out.printf("Specjalizacja dodana poprawnie.");
                 return;
             }
         }
@@ -178,7 +186,15 @@ public class DoctorManager {
 
         for (Doctor doctor : MediCenterManager.getDoctorList()) {
             if (doctor.getDoctorId().equals(id)) {
-                System.out.println(doctor.firstName + ", " + doctor.lastName + ", Specjalizacje: " + doctor.getSpecializations());
+                System.out.printf("Id: %s, Imie: %s, Nazwisko: %s, Id: %s, Wiek: %s, Numer telefonu: %s, E-mail: %s, Specjalizacje: %s\n",
+                        doctor.getDoctorId(),
+                        doctor.getFirstName(),
+                        doctor.getLastName(),
+                        doctor.getId(),
+                        doctor.getAge(),
+                        doctor.getPhoneNumber(),
+                        doctor.getMailAddress(),
+                        doctor.getSpecializations());
                 return;
             }
         }
@@ -198,7 +214,15 @@ public class DoctorManager {
         boolean isFoundAny = false;
         for (Doctor doctor : MediCenterManager.getDoctorList()) {
             if (doctor.getSpecializations().contains(specialization)) {
-                System.out.println(doctor.firstName + ", " + doctor.lastName + ", Specjalizacje: " + doctor.getSpecializations());
+                System.out.printf("Id: %s, Imie: %s, Nazwisko: %s, Id: %s, Wiek: %s, Numer telefonu: %s, E-mail: %s, Specjalizacje: %s\n",
+                        doctor.getDoctorId(),
+                        doctor.getFirstName(),
+                        doctor.getLastName(),
+                        doctor.getId(),
+                        doctor.getAge(),
+                        doctor.getPhoneNumber(),
+                        doctor.getMailAddress(),
+                        doctor.getSpecializations());
                 isFoundAny = true;
             }
         }
@@ -231,7 +255,7 @@ public class DoctorManager {
                                 .orElse(null);
 
                         if(todaysSchedule != null) {
-                            System.out.printf("%s %s-%s\n", todaysSchedule.getDate(), todaysSchedule.from, todaysSchedule.to);
+                            System.out.printf("%s %s-%s\n", todaysSchedule.getDate(), todaysSchedule.getFrom(), todaysSchedule.getTo());
                         }
                         else{
                             System.out.println("Brak grafiku.");

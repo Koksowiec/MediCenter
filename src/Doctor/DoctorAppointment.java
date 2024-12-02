@@ -3,9 +3,9 @@ package Doctor;
 import java.time.LocalDateTime;
 
 public class DoctorAppointment {
-    public String doctorId;
-    public String patientId;
-    public LocalDateTime appointmentDateTime;
+    private String doctorId;
+    private String patientId;
+    private LocalDateTime appointmentDateTime;
 
     public DoctorAppointment(){
     }
@@ -16,5 +16,27 @@ public class DoctorAppointment {
         this.appointmentDateTime = appointmentDateTime;
     }
 
-    // TODO: DODAJ GETTERY I SETTERY
+    public String getDoctorId() {
+        return doctorId;
+    }
+
+    public void setDoctorId(String doctorId) {
+        this.doctorId = doctorId;
+    }
+
+    public String getPatientId() {
+        return patientId;
+    }
+
+    public void setPatientId(String patientId) {
+        this.patientId = patientId;
+    }
+
+    public LocalDateTime getAppointmentDateTime() {
+        return appointmentDateTime;
+    }
+
+    public void setAppointmentDateTime(LocalDateTime appointmentDateTime) {
+        this.appointmentDateTime = appointmentDateTime;
+    }
 }

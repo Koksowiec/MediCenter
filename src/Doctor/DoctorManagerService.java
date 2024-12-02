@@ -142,7 +142,7 @@ public class DoctorManagerService {
     /// </summary>
     public boolean ValidatePatientId(String id){
         Patient patient = MediCenterManager.getPatientList().stream()
-                .filter(p -> p.id.equals(id))
+                .filter(p -> p.getId().equals(id))
                 .findFirst()
                 .orElse(null);
 
@@ -204,10 +204,10 @@ public class DoctorManagerService {
 
         if(schedule != null)
         {
-            for(LocalTime i = schedule.from; !i.isAfter(schedule.to); i = i.plusMinutes(15))
+            for(LocalTime i = schedule.getFrom(); !i.isAfter(schedule.getTo()); i = i.plusMinutes(15))
             {
                 LocalTime iterationTime = i;
-                if(doctor.getAppointments().stream().anyMatch(a -> a.appointmentDateTime.toLocalDate().equals(parsedDate) && a.appointmentDateTime.toLocalTime().equals(iterationTime))){
+                if(doctor.getAppointments().stream().anyMatch(a -> a.getAppointmentDateTime().toLocalDate().equals(parsedDate) && a.getAppointmentDateTime().toLocalTime().equals(iterationTime))){
                     System.out.printf("%s - Wizyta już umówiona\n", i);
                     continue;
                 }
@@ -263,7 +263,7 @@ public class DoctorManagerService {
             {
                 if(doctorSchedule.getDate().equals(parsedDateTime.toLocalDate()))
                 {
-                    if(!parsedDateTime.toLocalTime().isBefore((doctorSchedule.from)) && !parsedDateTime.toLocalTime().isAfter((doctorSchedule.to)))
+                    if(!parsedDateTime.toLocalTime().isBefore((doctorSchedule.getFrom())) && !parsedDateTime.toLocalTime().isAfter((doctorSchedule.getTo())))
                     {
                         isInDoctorWorkingTime = true;
                         break;
@@ -277,12 +277,12 @@ public class DoctorManagerService {
             }
 
             for(DoctorAppointment doctorAppointment : doctor.getAppointments()) {
-                if(doctorAppointment.appointmentDateTime.equals(parsedDateTime)){
+                if(doctorAppointment.getAppointmentDateTime().equals(parsedDateTime)){
                     throw new DoctorAppointmentAlreadyExists();
                 }
             }
 
-            doctor.setAppointments(new DoctorAppointment(doctor.id, patientId, parsedDateTime));
+            doctor.setAppointments(new DoctorAppointment(doctor.getDoctorId(), patientId, parsedDateTime));
 
             System.out.println("Wizyta została umówiona.");
 

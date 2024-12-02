@@ -71,13 +71,20 @@ public class PatientManager {
     /// Display patient by id if it exists.
     /// </summary>
     public void DisplayPatientById(){
-        System.out.println("Wprowadź pesel: ");
+        System.out.printf("Wprowadź pesel: ");
         String id = scanner.nextLine();
 
         for (Patient patient : MediCenterManager.getPatientList()) {
-            if(patient.id.equals(id))
+            if(patient.getId().equals(id))
             {
-                System.out.println(patient.firstName + ", " + patient.lastName);
+                System.out.printf("Imie: %s, Nazwisko: %s, Id: %s, Wiek: %s, Numer telefonu: %s, E-mail: %s\n",
+                        patient.getFirstName(),
+                        patient.getLastName(),
+                        patient.getId(),
+                        patient.getAge(),
+                        patient.getPhoneNumber(),
+                        patient.getMailAddress());
+
                 return;
             }
         }
@@ -88,14 +95,20 @@ public class PatientManager {
     /// Display patients with a surname if they exist.
     /// </summary>
     public void DisplayPatientsBySurname(){
-        System.out.println("Wprowadź nazwisko: ");
+        System.out.printf("Wprowadź nazwisko: ");
         String lastName = scanner.nextLine();
 
         boolean isFoundAny = false;
         for (Patient patient : MediCenterManager.getPatientList()) {
-            if(patient.lastName.equals(lastName))
+            if(patient.getLastName().equals(lastName))
             {
-                System.out.println(patient.firstName + ", " + patient.lastName);
+                System.out.printf("Imie: %s, Nazwisko: %s, Id: %s, Wiek: %s, Numer telefonu: %s, E-mail: %s\n",
+                        patient.getFirstName(),
+                        patient.getLastName(),
+                        patient.getId(),
+                        patient.getAge(),
+                        patient.getPhoneNumber(),
+                        patient.getMailAddress());
                 isFoundAny = true;
             }
         }
