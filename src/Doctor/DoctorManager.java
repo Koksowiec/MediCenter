@@ -2,6 +2,7 @@ package Doctor;
 
 import Enums.Specialization;
 import Extensions.LocalDateTimeExtensions;
+import Main.MediCenterManager;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -9,11 +10,8 @@ import java.time.LocalTime;
 import java.util.*;
 
 public class DoctorManager {
-    public static List<Doctor> DoctorList = new ArrayList<>();
-
     private final Scanner scanner = new Scanner(System.in);
     private final LocalDateTimeExtensions LocalDateTimeExtensions = new LocalDateTimeExtensions();
-
     private final DoctorManagerService DoctorManagerService = new DoctorManagerService();
 
     public DoctorManager(){
@@ -21,7 +19,7 @@ public class DoctorManager {
     }
 
     /// <summary>
-    /// Add doctor by user input.
+    /// Add doctor by user input. Validates birthdate, phone number, email and specialization.
     /// </summary>
     public void AddDoctor() {
         System.out.println("DODAJ LEKARZA");
@@ -32,44 +30,55 @@ public class DoctorManager {
         System.out.printf("Nazwisko: ");
         String lastName = scanner.nextLine();
 
-        System.out.printf("PESEL: ");
+        System.out.printf("PESEL lub numer dowodu: ");
         String id = scanner.nextLine();
 
         System.out.printf("Data urodzin (yyyy-MM-dd): ");
         String dateOfBirth = scanner.nextLine();
-
         while(!LocalDateTimeExtensions.isLocalDate(dateOfBirth)){
             System.out.printf("Podano niepoprawną datę urodzin, podaj jeszcze raz (yyyy-MM-dd): ");
             dateOfBirth = scanner.nextLine();
         }
 
-        System.out.printf("Numer telefonu: ");
+        System.out.printf("Numer telefonu (9-cyfr): ");
         String phoneNumber = scanner.nextLine();
+        while(!DoctorManagerService.ValidatePhoneNumber(phoneNumber)){
+            System.out.printf("Podano niepoprawny numer telefonu, podaj jeszcze raz (9 cyfr): ");
+            phoneNumber = scanner.nextLine();
+        }
 
         System.out.printf("E-mail: ");
         String mailAddress = scanner.nextLine();
+        while(!DoctorManagerService.ValidateEmail(mailAddress)){
+            System.out.printf("Podano niepoprawny adres e-mail, podaj jeszcze raz: ");
+            mailAddress = scanner.nextLine();
+        }
 
         DoctorManagerService.DisplayAviableSpecialization();
         System.out.printf("\nSpecjalizacje (oddzielone przecinkami): ");
         String specializationsInput = scanner.nextLine();
 
         Set<Specialization> specializations = DoctorManagerService.ValidateDoctorMultipleSpecialization(specializationsInput);
-        String doctorId = Integer.toString(DoctorList.size() + 1);
+        String doctorId = Integer.toString(MediCenterManager.getDoctorList().size() + 1);
 
         Doctor doctor = new Doctor(firstName, lastName, id, dateOfBirth, phoneNumber, mailAddress, doctorId, specializations);
 
-        DoctorList.add(doctor);
+        MediCenterManager.addToDoctorList(doctor);
 
         System.out.println(String.format("Lekarz utworzony poprawnie. Id: %s", doctorId));
     }
 
+    /// <summary>
+    /// Add doctors schedule by id. Check if doctor exists, and if schedule already exists.
+    /// If it does add to id if not create new one. Validate input date and hour.
+    /// </summary>
     public void AddScheduleByDoctorId(){
         System.out.println("DODAJ GRAFIK LEKARZA");
 
         System.out.printf("Podaj ID lekarza: ");
         String id = scanner.nextLine();
 
-        for (Doctor doctor : DoctorList) {
+        for (Doctor doctor : MediCenterManager.getDoctorList()) {
             if (doctor.getDoctorId().equals(id)) {
                 List<DoctorSchedule> doctorSchedules = new ArrayList<>();
 
@@ -81,6 +90,7 @@ public class DoctorManager {
                 System.out.printf("Podaj datę (yyyy-MM-dd): ");
                 String date = scanner.nextLine();
 
+                // Validacja daty
                 while(true)
                 {
                     if(!LocalDateTimeExtensions.isLocalDate(date)) {
@@ -92,6 +102,7 @@ public class DoctorManager {
                     break;
                 }
 
+                // Validacja godzin, muszą być 2 i musza być w poprawnym formacie
                 System.out.printf("Podaj godziny(hh:mm-hh:mm): ");
                 String time = scanner.nextLine();
                 String[] hours = time.split("-");
@@ -127,6 +138,9 @@ public class DoctorManager {
         System.out.printf("Nie udało się znaleźć lekarza o podanym Id: %s\n", id);
     }
 
+    /// <summary>
+    /// Add doctors specialization. Validate inputed specialization and add if it doesn't exist already.
+    /// </summary>
     public void UpdateDoctorSpecialization(){
         System.out.println("DODAJ SPECJALIZACJE LEKARZA");
 
@@ -139,7 +153,7 @@ public class DoctorManager {
 
         Specialization specialization = DoctorManagerService.ValidateDoctorSpecialization(userInputSpecialization);
 
-        for (Doctor doctor : DoctorList) {
+        for (Doctor doctor : MediCenterManager.getDoctorList()) {
             if (doctor.getDoctorId().equals(id)) {
                 if(!doctor.setSpecializations(specialization))
                 {
@@ -155,11 +169,14 @@ public class DoctorManager {
         System.out.println("Lekarz z ID " + id + " nie został znaleziony.");
     }
 
+    /// <summary>
+    /// Display doctor by id.
+    /// </summary>
     public void DisplayDoctorById() {
         System.out.printf("Wprowadź ID: ");
         String id = scanner.nextLine();
 
-        for (Doctor doctor : DoctorList) {
+        for (Doctor doctor : MediCenterManager.getDoctorList()) {
             if (doctor.getDoctorId().equals(id)) {
                 System.out.println(doctor.firstName + ", " + doctor.lastName + ", Specjalizacje: " + doctor.getSpecializations());
                 return;
@@ -168,6 +185,9 @@ public class DoctorManager {
         System.out.println("Lekarz z ID " + id + " nie został znaleziony.");
     }
 
+    /// <summary>
+    /// Display all doctors with a given specialization.
+    /// </summary>
     public void DisplayDoctorsBySpecialization() {
         DoctorManagerService.DisplayAviableSpecialization();
         System.out.printf("\nWprowadź specjalizacje: ");
@@ -176,7 +196,7 @@ public class DoctorManager {
         Specialization specialization = DoctorManagerService.ValidateDoctorSpecialization(userInput);
 
         boolean isFoundAny = false;
-        for (Doctor doctor : DoctorList) {
+        for (Doctor doctor : MediCenterManager.getDoctorList()) {
             if (doctor.getSpecializations().contains(specialization)) {
                 System.out.println(doctor.firstName + ", " + doctor.lastName + ", Specjalizacje: " + doctor.getSpecializations());
                 isFoundAny = true;
@@ -189,11 +209,14 @@ public class DoctorManager {
         }
     }
 
+    /// <summary>
+    /// Display doctor schedule by id for the next 7 days.
+    /// </summary>
     public void DisplayDoctorSchedulesByDoctorId() {
         System.out.printf("Wprowadź ID: ");
         String id = scanner.nextLine();
 
-        for (Doctor doctor : DoctorList) {
+        for (Doctor doctor : MediCenterManager.getDoctorList()) {
             if (doctor.getDoctorId().equals(id)) {
                 if(doctor.getSchedules() != null) {
                     // START: This can be moved to separate method
@@ -225,6 +248,10 @@ public class DoctorManager {
         System.out.println("Lekarz z Id: " + id + " nie został znaleziony.");
     }
 
+    /// <summary>
+    /// Schedule an appointment by doctor id. Validate if patient and cotro exists. Validate appointment date.
+    /// Try schedule appointment if the date and hour are correct. If not do nothing.
+    /// </summary>
     public void ScheduleAppointmentByDoctorId(){
         System.out.printf("Wprowadź PESEL pacjenta: ");
         String patientId = scanner.nextLine();

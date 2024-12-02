@@ -4,7 +4,7 @@ import Enums.Specialization;
 import Exceptions.DoctorAppointmentAlreadyExists;
 import Exceptions.DoctorDoesntWorkOnThisDate;
 import Extensions.LocalDateTimeExtensions;
-import Patient.PatientManager;
+import Main.MediCenterManager;
 import Patient.Patient;
 
 import java.time.LocalDate;
@@ -12,13 +12,15 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-
-import static Doctor.DoctorManager.DoctorList;
+import java.util.regex.Pattern;
 
 public class DoctorManagerService {
     private final Scanner scanner = new Scanner(System.in);
     private final Extensions.LocalDateTimeExtensions LocalDateTimeExtensions = new LocalDateTimeExtensions();
 
+    ///<summary>
+    /// Creates example user.
+    /// </summary>
     public void CreateDoctorOnInit(){
         Set<Specialization> specialization = new HashSet<>();
         specialization.add(Specialization.CHIRURG);
@@ -46,9 +48,12 @@ public class DoctorManagerService {
         appointments.add(new DoctorAppointment(doctor.getDoctorId(), "1", LocalDateTime.of(LocalDate.now(), LocalTime.parse("13:00"))));
         doctor.setAppointments(appointments);
 
-        DoctorList.add(doctor);
+        MediCenterManager.addToDoctorList(doctor);
     }
 
+    ///<summary>
+    /// Validates if specialization exists. If not asks user to input it again untill it is correct.
+    /// </summary>
     public Specialization ValidateDoctorSpecialization(String userInput){
         Specialization specialization;
         while(true)
@@ -68,6 +73,10 @@ public class DoctorManagerService {
         return specialization;
     }
 
+    ///<summary>
+    /// Validates if specializations (possible more than one separated by comma) exists.
+    /// If not asks user to input it again untill it is correct.
+    /// </summary>
     public Set<Specialization> ValidateDoctorMultipleSpecialization(String userInput){
         Set<Specialization> specializations = new HashSet<>();
 
@@ -107,6 +116,9 @@ public class DoctorManagerService {
         return specializations;
     }
 
+    ///<summary>
+    /// Display the content of Specialization enum.
+    /// </summary>
     public void DisplayAviableSpecialization(){
         System.out.printf("Specjalizacje do wyboru: ");
         Specialization[] possibleSpecializationValues = Specialization.values();
@@ -115,15 +127,21 @@ public class DoctorManagerService {
         }
     }
 
+    ///<summary>
+    /// Display the doctor by id. Doesn't validate it.
+    /// </summary>
     public Doctor GetDoctorById(String doctorId) {
-        return DoctorList.stream()
+        return MediCenterManager.getDoctorList().stream()
                 .filter(d -> d.getDoctorId().equals(doctorId))
                 .findFirst()
                 .get();
     }
 
+    ///<summary>
+    /// Validates if patient exists. Return true or false.
+    /// </summary>
     public boolean ValidatePatientId(String id){
-        Patient patient = PatientManager.PatientList.stream()
+        Patient patient = MediCenterManager.getPatientList().stream()
                 .filter(p -> p.id.equals(id))
                 .findFirst()
                 .orElse(null);
@@ -136,8 +154,11 @@ public class DoctorManagerService {
         return true;
     }
 
+    ///<summary>
+    /// Validates if doctor exists. Return true or false.
+    /// </summary>
     public boolean ValidateDoctorId(String doctorId){
-        Doctor doctor = DoctorList.stream()
+        Doctor doctor = MediCenterManager.getDoctorList().stream()
                 .filter(d -> d.getDoctorId().equals(doctorId))
                 .findFirst()
                 .orElse(null);
@@ -150,6 +171,9 @@ public class DoctorManagerService {
         return true;
     }
 
+    ///<summary>
+    /// Validates if date is in a correct format.
+    /// </summary>
     public void ValidateVisitDate(String date){
         while(true){
             if(!LocalDateTimeExtensions.isLocalDate(date))
@@ -164,7 +188,8 @@ public class DoctorManagerService {
     }
 
     ///<summary>
-    /// Pobierz grafik lekarza na dany dzień i wyświetl dostępne godziny co 15 min, jesli wizyta już istnieje to wypisz odpowiednią informację w trakcie dnia pracy lekarza.
+    /// Pobierz grafik lekarza na dany dzień i wyświetl dostępne godziny co 15 min,
+    /// jesli wizyta już istnieje to wypisz odpowiednią informację w trakcie dnia pracy lekarza.
     /// </summary>
     public boolean TryDisplaySchedule(String date, Doctor doctor){
         LocalDate parsedDate = LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
@@ -195,6 +220,9 @@ public class DoctorManagerService {
         return false;
     }
 
+    ///<summary>
+    /// Validates if time is in a correct format and if it is for every 15 minutes. (00, 15, 30, 45)
+    /// </summary>
     public void ValidateTime(String time){
         while(true)
         {
@@ -220,6 +248,10 @@ public class DoctorManagerService {
         }
     }
 
+    ///<summary>
+    /// Tries to set an appointment if the date and time is in the doctors working schedule.
+    /// Return false if something goes wrong.
+    /// </summary>
     public boolean TrySetAppointment(String date, String time, Doctor doctor, String patientId){
         String selectedDateTime = date + " " + time;
         LocalDateTime parsedDateTime = LocalDateTime.parse(selectedDateTime, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
@@ -267,69 +299,19 @@ public class DoctorManagerService {
         return false;
     }
 
-    /*
-    public String ValidateHour(String hour){
-        while(true)
-        {
-            if(LocalDateTimeExtensions.isLocalTime(hour))
-            {
-                break;
-            }
-
-            System.out.print("Wprowadzono nieprawidłowy format godziny, podaj jeszcze raz: ");
-            hour = scanner.nextLine();
-        }
-
-        return hour;
+    ///<summary>
+    /// Validate email with regex. It should have special characters '@', '.' in this order.
+    /// </summary>
+    public boolean ValidateEmail(String email){
+        String emailRegex = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$";
+        return Pattern.matches(emailRegex, email);
     }
 
-    public boolean DoesAppointmentExist(LocalTime time, DayOfWeek dayOfWeek, String doctorId, List<DoctorAppointment> doctorAppointmentList){
-        for(DoctorAppointment appointment : doctorAppointmentList) {
-            if(appointment.doctorId.equals(doctorId))
-            {
-                if(appointment.dayOfWeek.equals(dayOfWeek) && appointment.apointmentTime.equals(time)){
-                    return true;
-                }
-            }
-        }
-
-        return false;
+    ///<summary>
+    /// Validate phone number with reges. It should have 9 characters.
+    /// </summary>
+    public boolean ValidatePhoneNumber(String phoneNumber){
+        String phoneRegex = "^\\d{9}$";
+        return Pattern.matches(phoneRegex, phoneNumber);
     }
-
-    public boolean CanScheduleAppointment(String id, List<Doctor> doctorList, List<DoctorAppointment> doctorAppointmentList){
-        for (Doctor doctor : doctorList) {
-            if (doctor.doctorId.equals(id)) {
-                if(doctor.schedules != null) {
-                    DisplayDoctorAvailableAppointmentTimeByDoctor(doctor, doctorAppointmentList);
-                    return true;
-                } else {
-                    System.out.println("Lekarz z ID " + id + " nie posiada grafiku.");
-                    return false;
-                }
-            }
-        }
-        System.out.println("Lekarz z ID " + id + " nie został znaleziony.");
-        return false;
-    }
-
-    private void DisplayDoctorAvailableAppointmentTimeByDoctor(Doctor doctor, List<DoctorAppointment> doctorAppointmentList){
-        for (DoctorSchedule doctorSchedule : doctor.schedules) {
-            if (doctorSchedule.isWorkingDay) {
-                System.out.println(String.format("%s %s-%s", doctorSchedule.dayOfWeek, doctorSchedule.from.toString(), doctorSchedule.to.toString()));
-
-                LocalTime currentTime = doctorSchedule.from;
-
-                while(!currentTime.isAfter(doctorSchedule.to)){
-                    if(!DoesAppointmentExist(currentTime, doctorSchedule.dayOfWeek, doctor.doctorId, doctorAppointmentList)) {
-                        System.out.println(currentTime);
-                    }
-                    currentTime = currentTime.plusMinutes(15);
-                }
-
-            } else {
-                System.out.println(String.format("%s WOLNE", doctorSchedule.dayOfWeek));
-            }
-        }
-    }
-    */
 }
