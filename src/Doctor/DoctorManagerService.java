@@ -1,27 +1,89 @@
 package Doctor;
 
+import Enums.Specialization;
 import Exceptions.DoctorAppointmentAlreadyExists;
 import Exceptions.DoctorDoesntWorkOnThisDate;
 import Extensions.LocalDateTimeExtensions;
 import Patient.PatientManager;
 import Patient.Patient;
 
-import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.chrono.ChronoLocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 import static Doctor.DoctorManager.DoctorList;
 
 public class DoctorManagerService {
     private final Scanner scanner = new Scanner(System.in);
     private final Extensions.LocalDateTimeExtensions LocalDateTimeExtensions = new LocalDateTimeExtensions();
+
+    public Specialization ValidateDoctorSpecialization(String userInput){
+        Specialization specialization;
+        while(true)
+        {
+            try{
+                specialization = Specialization.valueOf(userInput.trim().toUpperCase());
+                break;
+            }
+            catch(Exception e)
+            {
+                System.out.printf("Nieprawidłowa specjalizacja. Podaj jeszcze raz: ");
+                userInput = scanner.nextLine();
+                continue;
+            }
+        }
+
+        return specialization;
+    }
+
+    public Set<Specialization> ValidateDoctorMultipleSpecialization(String userInput){
+        Set<Specialization> specializations = new HashSet<>();
+
+        while(true)
+        {
+            String[] specializationsArray = userInput.split(",");
+
+            if(Arrays.stream(specializationsArray).findAny().isPresent())
+            {
+                try {
+                    for (String specializationStr : specializationsArray) {
+                        Specialization specialization = Specialization.valueOf(specializationStr.trim().toUpperCase()); // zamiana na enum
+                        if(!specializations.add(specialization)) // dodanie do listy
+                        {
+                            System.out.printf("Nie udało się dodać specjalizacji %s do listy, taka specjalizacja już istnieje.\n", specialization);
+                            specializations = new HashSet<>();
+                            continue;
+                        }
+                    }
+                    break;
+                }
+                catch(Exception e)
+                {
+                    System.out.printf("Nieprawidłowe specjalizacje. Podaj jeszcze raz (oddzielone przecinkami): ");
+                    userInput = scanner.nextLine();
+                    continue;
+                }
+            }
+            else
+            {
+                System.out.printf("Nieprawidłowe specjalizacje. Podaj jeszcze raz (oddzielone przecinkami): ");
+                userInput = scanner.nextLine();
+                continue;
+            }
+        }
+
+        return specializations;
+    }
+
+    public void DisplayAviableSpecialization(){
+        System.out.printf("Specjalizacje do wyboru: ");
+        Specialization[] possibleSpecializationValues = Specialization.values();
+        for(Specialization specialization : possibleSpecializationValues){
+            System.out.printf(specialization.toString() + ", ");
+        }
+    }
 
     public Doctor GetDoctorById(String doctorId) {
         return DoctorList.stream()

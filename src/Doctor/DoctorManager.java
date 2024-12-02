@@ -1,14 +1,11 @@
 package Doctor;
 
 import Enums.Specialization;
-import Exceptions.DoctorAppointmentAlreadyExists;
-import Exceptions.DoctorDoesntWorkOnThisDate;
 import Extensions.LocalDateTimeExtensions;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class DoctorManager {
@@ -20,6 +17,9 @@ public class DoctorManager {
     private final DoctorManagerService DoctorManagerService = new DoctorManagerService();
 
     public DoctorManager(){
+        Set<Specialization> specialization = new HashSet<>();
+        specialization.add(Specialization.CHIRURG);
+
         Doctor doctor = new Doctor(
                 "Jan",
                 "Kowalski",
@@ -28,7 +28,7 @@ public class DoctorManager {
                 "+48123123123",
                 "kowalskij@test.com",
                 "1",
-                List.of(Specialization.CHIRURG));
+                specialization);
 
         doctor.schedules.add(new DoctorSchedule(LocalDate.now(), LocalTime.parse("09:00"), LocalTime.parse("17:00")));
         doctor.schedules.add(new DoctorSchedule(LocalDate.now().plusDays(1), LocalTime.parse("09:00"), LocalTime.parse("17:00")));
@@ -68,14 +68,11 @@ public class DoctorManager {
         System.out.printf("E-mail: ");
         String mailAddress = scanner.nextLine();
 
-        System.out.printf("Specjalizacje (oddzielone przecinkami): ");
+        DoctorManagerService.DisplayAviableSpecialization();
+        System.out.printf("\nSpecjalizacje (oddzielone przecinkami): ");
         String specializationsInput = scanner.nextLine();
 
-        String[] specializationsArray = specializationsInput.split(",");
-        List<Specialization> specializations = new ArrayList<>();
-        for (String specializationStr : specializationsArray) {
-            specializations.add(Specialization.valueOf(specializationStr.trim().toUpperCase()));  // zamiana na enum
-        }
+        Set<Specialization> specializations = DoctorManagerService.ValidateDoctorMultipleSpecialization(specializationsInput);
 
         String doctorId = Integer.toString(DoctorList.size() + 1);
 
@@ -156,13 +153,20 @@ public class DoctorManager {
         System.out.printf("Podaj ID lekarza: ");
         String id = scanner.nextLine();
 
-        System.out.printf("Podaj specjalizacje lekarza: ");
+        DoctorManagerService.DisplayAviableSpecialization();
+        System.out.printf("\nPodaj specjalizacje lekarza: ");
         String userInputSpecialization = scanner.nextLine();
-        Specialization specialization = Specialization.valueOf(userInputSpecialization.trim().toUpperCase());
+
+        Specialization specialization = DoctorManagerService.ValidateDoctorSpecialization(userInputSpecialization);
 
         for (Doctor doctor : DoctorList) {
-            if (doctor.id.equals(id)) {
-                doctor.specializations.add(specialization);
+            if (doctor.doctorId.equals(id)) {
+                if(!doctor.specializations.add(specialization))
+                {
+                    System.out.println("Ten lekarz już ma taką specjalizację...");
+                    return;
+                }
+
 
                 System.out.println(doctor.firstName + ", " + doctor.lastName + ", Specjalizacje: " + doctor.specializations);
                 return;
@@ -185,15 +189,23 @@ public class DoctorManager {
     }
 
     public void DisplayDoctorsBySpecialization() {
-        System.out.printf("Wprowadź specjalizacje: ");
+        DoctorManagerService.DisplayAviableSpecialization();
+        System.out.printf("\nWprowadź specjalizacje: ");
         String userInput = scanner.nextLine();
 
-        Specialization specialization = Specialization.valueOf(userInput.trim().toUpperCase());
+        Specialization specialization = DoctorManagerService.ValidateDoctorSpecialization(userInput);
 
+        boolean isFoundAny = false;
         for (Doctor doctor : DoctorList) {
             if (doctor.specializations.contains(specialization)) {
                 System.out.println(doctor.firstName + ", " + doctor.lastName + ", Specjalizacje: " + doctor.specializations);
+                isFoundAny = true;
             }
+        }
+
+        if(!isFoundAny)
+        {
+            System.out.println("Nie ma lekarza z taką specjalizacją.");
         }
     }
 
