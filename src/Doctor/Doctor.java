@@ -9,11 +9,10 @@ import java.util.List;
 import java.util.Set;
 
 public class Doctor extends Patient {
-    public String doctorId;
-    public Set<Specialization> specializations = new HashSet<>();
-
-    public List<DoctorSchedule> schedules = new ArrayList<>();
-    public List<DoctorAppointment> appointments = new ArrayList<>();
+    private String doctorId;
+    private Set<Specialization> specializations = new HashSet<>();
+    private List<DoctorSchedule> schedules = new ArrayList<>();
+    private List<DoctorAppointment> appointments = new ArrayList<>();
 
     public Doctor() {
     }
@@ -25,5 +24,39 @@ public class Doctor extends Patient {
         this.specializations = specializations;
     }
 
-    // TODO: DODAJ GETTERY I SETTERY
+    public String getDoctorId() {
+        return doctorId;
+    }
+
+    public void setDoctorId(String doctorId) {
+        this.doctorId = doctorId;
+    }
+
+    public Set<Specialization> getSpecializations() {
+        return specializations;
+    }
+
+    public boolean setSpecializations(Specialization specializations) {
+        return this.specializations.add(specializations);
+    }
+
+    public List<DoctorSchedule> getSchedules() {
+        return schedules;
+    }
+
+    public void setSchedules(List<DoctorSchedule> schedules) {
+        this.schedules = schedules;
+    }
+
+    public List<DoctorAppointment> getAppointments() {
+        return appointments;
+    }
+
+    public void setAppointments(List<DoctorAppointment> appointments) {
+        this.appointments = appointments;
+    }
+
+    public void setAppointments(DoctorAppointment appointments) {
+        this.appointments.add(appointments);
+    }
 }

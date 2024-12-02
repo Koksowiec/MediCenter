@@ -19,6 +19,36 @@ public class DoctorManagerService {
     private final Scanner scanner = new Scanner(System.in);
     private final Extensions.LocalDateTimeExtensions LocalDateTimeExtensions = new LocalDateTimeExtensions();
 
+    public void CreateDoctorOnInit(){
+        Set<Specialization> specialization = new HashSet<>();
+        specialization.add(Specialization.CHIRURG);
+
+        Doctor doctor = new Doctor(
+                "Jan",
+                "Kowalski",
+                "01234567890",
+                "2000-01-01",
+                "+48123123123",
+                "kowalskij@test.com",
+                "1",
+                specialization);
+
+        List<DoctorSchedule> schedules = new ArrayList<>();
+        schedules.add(new DoctorSchedule(LocalDate.now(), LocalTime.parse("09:00"), LocalTime.parse("17:00")));
+        schedules.add(new DoctorSchedule(LocalDate.now().plusDays(1), LocalTime.parse("09:00"), LocalTime.parse("17:00")));
+        schedules.add(new DoctorSchedule(LocalDate.now().plusDays(2), LocalTime.parse("09:00"), LocalTime.parse("17:00")));
+        schedules.add(new DoctorSchedule(LocalDate.now().plusDays(3), LocalTime.parse("09:00"), LocalTime.parse("17:00")));
+        schedules.add(new DoctorSchedule(LocalDate.now().plusDays(5), LocalTime.parse("09:00"), LocalTime.parse("17:00")));
+        doctor.setSchedules(schedules);
+
+        List<DoctorAppointment> appointments = new ArrayList<>();
+        appointments.add(new DoctorAppointment(doctor.getDoctorId(), "1", LocalDateTime.of(LocalDate.now(), LocalTime.parse("09:45"))));
+        appointments.add(new DoctorAppointment(doctor.getDoctorId(), "1", LocalDateTime.of(LocalDate.now(), LocalTime.parse("13:00"))));
+        doctor.setAppointments(appointments);
+
+        DoctorList.add(doctor);
+    }
+
     public Specialization ValidateDoctorSpecialization(String userInput){
         Specialization specialization;
         while(true)
@@ -87,7 +117,7 @@ public class DoctorManagerService {
 
     public Doctor GetDoctorById(String doctorId) {
         return DoctorList.stream()
-                .filter(d -> d.doctorId.equals(doctorId))
+                .filter(d -> d.getDoctorId().equals(doctorId))
                 .findFirst()
                 .get();
     }
@@ -108,7 +138,7 @@ public class DoctorManagerService {
 
     public boolean ValidateDoctorId(String doctorId){
         Doctor doctor = DoctorList.stream()
-                .filter(d -> d.doctorId.equals(doctorId))
+                .filter(d -> d.getDoctorId().equals(doctorId))
                 .findFirst()
                 .orElse(null);
 
@@ -142,7 +172,7 @@ public class DoctorManagerService {
         LocalTime start = LocalTime.parse("06:00", DateTimeFormatter.ofPattern("HH:mm"));
         LocalTime end = LocalTime.parse("21:00", DateTimeFormatter.ofPattern("HH:mm"));
 
-        DoctorSchedule schedule = doctor.schedules.stream()
+        DoctorSchedule schedule = doctor.getSchedules().stream()
                 .filter(s -> s.getDate().equals(parsedDate))
                 .findFirst()
                 .orElse(null);
@@ -152,7 +182,7 @@ public class DoctorManagerService {
             for(LocalTime i = schedule.from; !i.isAfter(schedule.to); i = i.plusMinutes(15))
             {
                 LocalTime iterationTime = i;
-                if(doctor.appointments.stream().anyMatch(a -> a.appointmentDateTime.toLocalDate().equals(parsedDate) && a.appointmentDateTime.toLocalTime().equals(iterationTime))){
+                if(doctor.getAppointments().stream().anyMatch(a -> a.appointmentDateTime.toLocalDate().equals(parsedDate) && a.appointmentDateTime.toLocalTime().equals(iterationTime))){
                     System.out.printf("%s - Wizyta już umówiona\n", i);
                     continue;
                 }
@@ -197,7 +227,7 @@ public class DoctorManagerService {
         try
         {
             boolean isInDoctorWorkingTime = false;
-            for(DoctorSchedule doctorSchedule : doctor.schedules)
+            for(DoctorSchedule doctorSchedule : doctor.getSchedules())
             {
                 if(doctorSchedule.getDate().equals(parsedDateTime.toLocalDate()))
                 {
@@ -214,13 +244,13 @@ public class DoctorManagerService {
                 throw new DoctorDoesntWorkOnThisDate();
             }
 
-            for(DoctorAppointment doctorAppointment : doctor.appointments) {
+            for(DoctorAppointment doctorAppointment : doctor.getAppointments()) {
                 if(doctorAppointment.appointmentDateTime.equals(parsedDateTime)){
                     throw new DoctorAppointmentAlreadyExists();
                 }
             }
 
-            doctor.appointments.add(new DoctorAppointment(doctor.id, patientId, parsedDateTime));
+            doctor.setAppointments(new DoctorAppointment(doctor.id, patientId, parsedDateTime));
 
             System.out.println("Wizyta została umówiona.");
 

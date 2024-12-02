@@ -17,31 +17,12 @@ public class DoctorManager {
     private final DoctorManagerService DoctorManagerService = new DoctorManagerService();
 
     public DoctorManager(){
-        Set<Specialization> specialization = new HashSet<>();
-        specialization.add(Specialization.CHIRURG);
-
-        Doctor doctor = new Doctor(
-                "Jan",
-                "Kowalski",
-                "01234567890",
-                "2000-01-01",
-                "+48123123123",
-                "kowalskij@test.com",
-                "1",
-                specialization);
-
-        doctor.schedules.add(new DoctorSchedule(LocalDate.now(), LocalTime.parse("09:00"), LocalTime.parse("17:00")));
-        doctor.schedules.add(new DoctorSchedule(LocalDate.now().plusDays(1), LocalTime.parse("09:00"), LocalTime.parse("17:00")));
-        doctor.schedules.add(new DoctorSchedule(LocalDate.now().plusDays(2), LocalTime.parse("09:00"), LocalTime.parse("17:00")));
-        doctor.schedules.add(new DoctorSchedule(LocalDate.now().plusDays(3), LocalTime.parse("09:00"), LocalTime.parse("17:00")));
-        doctor.schedules.add(new DoctorSchedule(LocalDate.now().plusDays(5), LocalTime.parse("09:00"), LocalTime.parse("17:00")));
-
-        doctor.appointments.add(new DoctorAppointment(doctor.doctorId, "1", LocalDateTime.of(LocalDate.now(), LocalTime.parse("09:45"))));
-        doctor.appointments.add(new DoctorAppointment(doctor.doctorId, "1", LocalDateTime.of(LocalDate.now(), LocalTime.parse("13:00"))));
-
-        DoctorList.add(doctor);
+        DoctorManagerService.CreateDoctorOnInit();
     }
 
+    /// <summary>
+    /// Add doctor by user input.
+    /// </summary>
     public void AddDoctor() {
         System.out.println("DODAJ LEKARZA");
 
@@ -73,7 +54,6 @@ public class DoctorManager {
         String specializationsInput = scanner.nextLine();
 
         Set<Specialization> specializations = DoctorManagerService.ValidateDoctorMultipleSpecialization(specializationsInput);
-
         String doctorId = Integer.toString(DoctorList.size() + 1);
 
         Doctor doctor = new Doctor(firstName, lastName, id, dateOfBirth, phoneNumber, mailAddress, doctorId, specializations);
@@ -90,12 +70,12 @@ public class DoctorManager {
         String id = scanner.nextLine();
 
         for (Doctor doctor : DoctorList) {
-            if (doctor.doctorId.equals(id)) {
+            if (doctor.getDoctorId().equals(id)) {
                 List<DoctorSchedule> doctorSchedules = new ArrayList<>();
 
-                if(doctor.schedules != null)
+                if(doctor.getSchedules() != null)
                 {
-                    doctorSchedules = doctor.schedules;
+                    doctorSchedules = doctor.getSchedules();
                 }
 
                 System.out.printf("Podaj datę (yyyy-MM-dd): ");
@@ -136,7 +116,7 @@ public class DoctorManager {
                 var newDoctorSchedule = new DoctorSchedule(LocalDate.parse(date), LocalTime.parse(hours[0]), LocalTime.parse(hours[1]));
                 doctorSchedules.add(newDoctorSchedule);
 
-                doctor.schedules = doctorSchedules;
+                doctor.setSchedules(doctorSchedules);
 
                 System.out.printf("Grafik dla lekarza o Id: %s utworzony: %s, %s\n", id, date, time);
 
@@ -160,15 +140,15 @@ public class DoctorManager {
         Specialization specialization = DoctorManagerService.ValidateDoctorSpecialization(userInputSpecialization);
 
         for (Doctor doctor : DoctorList) {
-            if (doctor.doctorId.equals(id)) {
-                if(!doctor.specializations.add(specialization))
+            if (doctor.getDoctorId().equals(id)) {
+                if(!doctor.setSpecializations(specialization))
                 {
                     System.out.println("Ten lekarz już ma taką specjalizację...");
                     return;
                 }
 
 
-                System.out.println(doctor.firstName + ", " + doctor.lastName + ", Specjalizacje: " + doctor.specializations);
+                System.out.println(doctor.firstName + ", " + doctor.lastName + ", Specjalizacje: " + doctor.getSpecializations());
                 return;
             }
         }
@@ -180,8 +160,8 @@ public class DoctorManager {
         String id = scanner.nextLine();
 
         for (Doctor doctor : DoctorList) {
-            if (doctor.doctorId.equals(id)) {
-                System.out.println(doctor.firstName + ", " + doctor.lastName + ", Specjalizacje: " + doctor.specializations);
+            if (doctor.getDoctorId().equals(id)) {
+                System.out.println(doctor.firstName + ", " + doctor.lastName + ", Specjalizacje: " + doctor.getSpecializations());
                 return;
             }
         }
@@ -197,8 +177,8 @@ public class DoctorManager {
 
         boolean isFoundAny = false;
         for (Doctor doctor : DoctorList) {
-            if (doctor.specializations.contains(specialization)) {
-                System.out.println(doctor.firstName + ", " + doctor.lastName + ", Specjalizacje: " + doctor.specializations);
+            if (doctor.getSpecializations().contains(specialization)) {
+                System.out.println(doctor.firstName + ", " + doctor.lastName + ", Specjalizacje: " + doctor.getSpecializations());
                 isFoundAny = true;
             }
         }
@@ -214,15 +194,15 @@ public class DoctorManager {
         String id = scanner.nextLine();
 
         for (Doctor doctor : DoctorList) {
-            if (doctor.doctorId.equals(id)) {
-                if(doctor.schedules != null) {
+            if (doctor.getDoctorId().equals(id)) {
+                if(doctor.getSchedules() != null) {
                     // START: This can be moved to separate method
                     System.out.println("GRAFIK NA NAJBLIŻSZE 7 DNI: ");
 
                     for(int i = 0; i < 7; i++)
                     {
                         LocalDate today = LocalDate.now().plusDays(i);
-                        DoctorSchedule todaysSchedule = doctor.schedules.stream()
+                        DoctorSchedule todaysSchedule = doctor.getSchedules().stream()
                                 .filter(schedule -> schedule.getDate().isEqual(today))
                                 .findFirst()
                                 .orElse(null);
