@@ -119,7 +119,7 @@ public class DoctorManagerService {
     ///<summary>
     /// Display the content of Specialization enum.
     /// </summary>
-    public void DisplayAviableSpecialization(){
+    public void DisplayAvailableSpecialization(){
         System.out.printf("Specjalizacje do wyboru: ");
         Specialization[] possibleSpecializationValues = Specialization.values();
         for(Specialization specialization : possibleSpecializationValues){

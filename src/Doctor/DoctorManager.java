@@ -54,7 +54,7 @@ public class DoctorManager {
             mailAddress = scanner.nextLine();
         }
 
-        DoctorManagerService.DisplayAviableSpecialization();
+        DoctorManagerService.DisplayAvailableSpecialization();
         System.out.printf("\nSpecjalizacje (oddzielone przecinkami): ");
         String specializationsInput = scanner.nextLine();
 
@@ -157,7 +157,7 @@ public class DoctorManager {
         System.out.printf("Podaj ID lekarza: ");
         String id = scanner.nextLine();
 
-        DoctorManagerService.DisplayAviableSpecialization();
+        DoctorManagerService.DisplayAvailableSpecialization();
         System.out.printf("\nPodaj specjalizacje lekarza: ");
         String userInputSpecialization = scanner.nextLine();
 
@@ -205,7 +205,7 @@ public class DoctorManager {
     /// Display all doctors with a given specialization.
     /// </summary>
     public void DisplayDoctorsBySpecialization() {
-        DoctorManagerService.DisplayAviableSpecialization();
+        DoctorManagerService.DisplayAvailableSpecialization();
         System.out.printf("\nWprowadź specjalizacje: ");
         String userInput = scanner.nextLine();
 

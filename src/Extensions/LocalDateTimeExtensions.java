@@ -6,9 +6,9 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
 public class LocalDateTimeExtensions {
-    public boolean isLocalDate(String localDateTime) {
+    public boolean isLocalDate(String localDate) {
         try {
-            LocalDate.parse(localDateTime, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+            LocalDate.parse(localDate, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
         } catch (Exception e) {
             return false;
         }

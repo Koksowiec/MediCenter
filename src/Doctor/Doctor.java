@@ -36,8 +36,8 @@ public class Doctor extends Patient {
         return specializations;
     }
 
-    public boolean setSpecializations(Specialization specializations) {
-        return this.specializations.add(specializations);
+    public boolean setSpecializations(Specialization specialization) {
+        return this.specializations.add(specialization);
     }
 
     public List<DoctorSchedule> getSchedules() {
@@ -56,7 +56,7 @@ public class Doctor extends Patient {
         this.appointments = appointments;
     }
 
-    public void setAppointments(DoctorAppointment appointments) {
-        this.appointments.add(appointments);
+    public void setAppointments(DoctorAppointment appointment) {
+        this.appointments.add(appointment);
     }
 }
