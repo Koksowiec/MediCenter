@@ -1,5 +1,6 @@
-package Tests;
+package Tests.Extensions;
 
+import Extensions.LocalDateTimeExtensions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -23,7 +24,7 @@ class LocalDateTimeExtensionsTest {
     }
 
     @Test
-    void testIsLocalDate_InvalidDate() {
+    void testIsLocalDate_InvalidDateMonth() {
         String input = "2024-13-05"; // Niepoprawny miesiąc
 
         boolean result = extensions.isLocalDate(input);
@@ -31,8 +32,10 @@ class LocalDateTimeExtensionsTest {
         assertFalse(result);
     }
 
+    // Ten test nie przechodzi specjalnie aby pokazać, że program mógłby wymagać ulepszenia
+    // Format jest poprawny dlatego uznany jest za true test jednak my wiemy, że nie ma jeszcze takiego roku :)
     @Test
-    void testIsLocalDate_InvalidDate() {
+    void testIsLocalDate_InvalidDateYear() {
         String input = "9999-12-05"; // Niepoprawny rok
 
         boolean result = extensions.isLocalDate(input);
@@ -41,7 +44,7 @@ class LocalDateTimeExtensionsTest {
     }
 
     @Test
-    void testIsLocalDate_InvalidDate() {
+    void testIsLocalDate_InvalidDateDay() {
         String input = "2024-12-35"; // Niepoprawny dzień
 
         boolean result = extensions.isLocalDate(input);
@@ -59,7 +62,7 @@ class LocalDateTimeExtensionsTest {
     }
 
     @Test
-    void testIsLocalTime_InvalidTime() {
+    void testIsLocalTime_InvalidTimeHours() {
         String input = "25:00"; // Niepoprawna godzina
 
         boolean result = extensions.isLocalTime(input);
@@ -68,7 +71,7 @@ class LocalDateTimeExtensionsTest {
     }
 
     @Test
-    void testIsLocalTime_InvalidTime() {
+    void testIsLocalTime_InvalidTimeMinutes() {
         String input = "23:61"; // Niepoprawna minuta
 
         boolean result = extensions.isLocalTime(input);

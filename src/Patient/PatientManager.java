@@ -7,7 +7,6 @@ import java.util.Scanner;
 import java.util.regex.Pattern;
 
 public class PatientManager {
-    private final Scanner scanner = new Scanner(System.in);
     private final Extensions.LocalDateTimeExtensions LocalDateTimeExtensions = new LocalDateTimeExtensions();
 
     public PatientManager(){
@@ -26,6 +25,8 @@ public class PatientManager {
     /// Add patient. Validate birthdate, phone number and email.
     /// </summary>
     public void AddPatient(){
+        Scanner scanner = new Scanner(System.in); // Robimy to aby można było przetestować tą metodę
+
         System.out.println("DODAJ PACJENTA");
 
         System.out.printf("Imię: ");
@@ -69,6 +70,8 @@ public class PatientManager {
     /// Display patient by id if it exists.
     /// </summary>
     public void DisplayPatientById(){
+        Scanner scanner = new Scanner(System.in); // do testów
+
         System.out.printf("Wprowadź pesel: ");
         String id = scanner.nextLine();
 
@@ -93,6 +96,8 @@ public class PatientManager {
     /// Display patients with a surname if they exist.
     /// </summary>
     public void DisplayPatientsBySurname(){
+        Scanner scanner = new Scanner(System.in);
+
         System.out.printf("Wprowadź nazwisko: ");
         String lastName = scanner.nextLine();
 
