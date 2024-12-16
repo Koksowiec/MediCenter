@@ -11,12 +11,10 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class PatientManagerTest {
     private PatientManager patientManager;
-    private MediCenterManager mediCenterManager;
 
     @BeforeEach
     void setUp() {
         patientManager = new PatientManager();
-        mediCenterManager = new MediCenterManager();
     }
 
     @Test
