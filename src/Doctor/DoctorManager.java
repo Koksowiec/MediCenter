@@ -10,7 +10,6 @@ import java.time.LocalTime;
 import java.util.*;
 
 public class DoctorManager {
-    private final Scanner scanner = new Scanner(System.in);
     private final LocalDateTimeExtensions LocalDateTimeExtensions = new LocalDateTimeExtensions();
     private final DoctorManagerService DoctorManagerService = new DoctorManagerService();
 
@@ -22,6 +21,7 @@ public class DoctorManager {
     /// Add doctor by user input. Validates birthdate, phone number, email and specialization.
     /// </summary>
     public void AddDoctor() {
+        Scanner scanner = new Scanner(System.in);
         System.out.println("DODAJ LEKARZA");
 
         System.out.printf("Imię: ");
@@ -73,6 +73,7 @@ public class DoctorManager {
     /// If it does add to id if not create new one. Validate input date and hour.
     /// </summary>
     public void AddScheduleByDoctorId(){
+        Scanner scanner = new Scanner(System.in);
         System.out.println("DODAJ GRAFIK LEKARZA");
 
         System.out.printf("Podaj ID lekarza: ");
@@ -152,6 +153,7 @@ public class DoctorManager {
     /// Add doctors specialization. Validate inputed specialization and add if it doesn't exist already.
     /// </summary>
     public void UpdateDoctorSpecialization(){
+        Scanner scanner = new Scanner(System.in);
         System.out.println("DODAJ SPECJALIZACJE LEKARZA");
 
         System.out.printf("Podaj ID lekarza: ");
@@ -181,6 +183,7 @@ public class DoctorManager {
     /// Display doctor by id.
     /// </summary>
     public void DisplayDoctorById() {
+        Scanner scanner = new Scanner(System.in);
         System.out.printf("Wprowadź ID: ");
         String id = scanner.nextLine();
 
@@ -205,6 +208,8 @@ public class DoctorManager {
     /// Display all doctors with a given specialization.
     /// </summary>
     public void DisplayDoctorsBySpecialization() {
+        Scanner scanner = new Scanner(System.in);
+
         DoctorManagerService.DisplayAvailableSpecialization();
         System.out.printf("\nWprowadź specjalizacje: ");
         String userInput = scanner.nextLine();
@@ -237,6 +242,8 @@ public class DoctorManager {
     /// Display doctor schedule by id for the next 7 days.
     /// </summary>
     public void DisplayDoctorSchedulesByDoctorId() {
+        Scanner scanner = new Scanner(System.in);
+
         System.out.printf("Wprowadź ID: ");
         String id = scanner.nextLine();
 
@@ -277,6 +284,8 @@ public class DoctorManager {
     /// Try schedule appointment if the date and hour are correct. If not do nothing.
     /// </summary>
     public void ScheduleAppointmentByDoctorId(){
+        Scanner scanner = new Scanner(System.in);
+
         System.out.printf("Wprowadź PESEL pacjenta: ");
         String patientId = scanner.nextLine();
         if(!DoctorManagerService.ValidatePatientId(patientId))
